@@ -60,6 +60,12 @@ class TestRPNCalculator(unittest.TestCase):
         """Test that invalid tokens raise InvalidTokenError."""
         with self.assertRaises(InvalidTokenError):
             self.calc.evaluate("3 + 4a")
+        with self.assertRaises(InvalidTokenError):
+            self.calc.evaluate("foo * 2")
+        with self.assertRaises(InvalidTokenError):
+            self.calc.evaluate("2 $ 3")
+        with self.assertRaises(InvalidTokenError):
+            self.calc.evaluate("5 @ 1")
 
     def test_mismatched_parentheses(self):
         """Test that mismatched parentheses raise MismatchedParenthesesError."""

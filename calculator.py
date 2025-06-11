@@ -74,7 +74,7 @@ class RPNCalculator:
         self._check_parentheses(tokens)
 
         output = []
-        operators = []
+        operators: list[str] = []
 
         for token in tokens:
             if token.replace(".", "", 1).isdigit():
