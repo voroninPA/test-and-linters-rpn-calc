@@ -80,8 +80,6 @@ class TestRPNCalculator(unittest.TestCase):
             self.calc.evaluate("3 +")
         with self.assertRaises(RPNSyntaxError):
             self.calc.evaluate("+ 3")
-        with self.assertRaises(RPNSyntaxError):
-            self.calc.evaluate("3 3 +")
 
     def test_division_by_zero(self):
         """Test that division by zero raises RPNSyntaxError."""

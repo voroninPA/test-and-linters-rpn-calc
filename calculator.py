@@ -41,7 +41,24 @@ class RPNCalculator:
 
     def _tokenize(self, expression: str) -> list:
         """Tokenize the input expression into numbers, operators, and parentheses."""
-        tokens = re.findall(r"\d+\.?\d*|[()+\-*/]", expression)
+        # Use finditer to get all matches and their positions
+        token_pattern = r"\d+\.?\d*|[()+\-*/]"
+        tokens = []
+        last_end = 0
+        for match in re.finditer(token_pattern, expression):
+            start, end = match.span()
+            # Check for any non-space characters between last_end and start
+            if start > last_end:
+                skipped = expression[last_end:start]
+                if skipped.strip():
+                    raise InvalidTokenError(f"Invalid token: {skipped.strip()}")
+            tokens.append(match.group())
+            last_end = end
+        # Check for any trailing invalid characters after the last match
+        if last_end < len(expression):
+            skipped = expression[last_end:]
+            if skipped.strip():
+                raise InvalidTokenError(f"Invalid token: {skipped.strip()}")
         return tokens
 
     def _validate_tokens(self, tokens: list) -> None:
@@ -123,8 +140,10 @@ class RPNCalculator:
             else:
                 raise InvalidTokenError(f"Invalid token in RPN: {token}")
 
-        if len(stack) != 1:
-            raise RPNSyntaxError("Malformed expression")
+        if len(stack) == 0:
+            raise RPNSyntaxError("No result on the stack (empty expression)")
+        if len(stack) > 1:
+            raise RPNSyntaxError("Malformed expression: too many operands left on the stack")
 
         return stack[0]
 
